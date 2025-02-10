@@ -1,0 +1,36 @@
+---
+- name: Copy Device Configuration
+  hosts:
+    - srx_lab
+  connection: local
+  gather_facts: no
+  # vars_files:
+  #   - vars.yml
+  vars:
+    user: lab
+    passwd: lab123
+    subnet: 172.16.1
+    course: asec
+    gw: 254
+    # lab: 1 # extra
+  tasks:
+    - name: Set varible
+      set_fact:
+        num: "{{ (inventory_hostname[3:] | int) + 80 }}"
+
+    # - name: Print varible
+    #   debug:
+    #     var: "{{ inventory_hostname[3:] | int }}"
+
+    - name: Load configuration to devices
+      juniper.device.config:
+        format: text
+        load: override
+        template: "{{ course }}/lab{{ lab }}/srx{{ 2 - (num | int ) % 2 }}.j2"
+        vars:
+          subnet: "{{ subnet }}"
+          num: "{{ num }}"
+          mac: "{{ inventory_hostname[3:] | int }}"
+        timeout: 30
+        commit: true
+

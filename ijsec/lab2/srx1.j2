@@ -1,0 +1,81 @@
+
+## Last commit: 2025-02-08 15:44:36 +07 by jncie
+version 21.2R1.10;
+system {
+    host-name vSRX-NG1;
+    root-authentication {
+        encrypted-password "$6$aU7ujgiy$IuFg5EizzIsqzEl/8mMT9Wtr49uuXqMwJ6q5ctF7yIwChPrtT96n.lX96Vpt01agHAzWnRrUD/orhHBOvYbbS/";
+    }
+    login {
+        user lab {
+            uid 2001;
+            class super-user;
+            authentication {
+                encrypted-password "$6$FFxK1qon$JXt2MqPKJWM2MaVIUnJxO5M6U6NOROrSYv1QuaSScafZJqoJzJADm83TqZQ2TcRyAYGwoTobK2LlyDNWg7Bqr1";
+            }
+        }
+    }
+    services {
+        ssh {
+            root-login allow;
+        }
+        netconf {
+            ssh;
+        }
+    }
+    time-zone Asia/Saigon;
+    name-server {
+        8.8.8.8;
+    }
+    syslog {
+        user * {
+            pfe none;
+        }
+    }
+    ntp {
+        server 172.16.1.253;
+    }
+}
+security {
+    policies;
+}
+interfaces {
+    ge-0/0/0 {
+        unit 0 {
+            family inet {
+                address 172.18.1.1/30;
+            }
+        }
+    }
+    ge-0/0/1 {
+        unit 0 {
+            family inet {
+                address 10.10.101.1/24;
+            }
+        }
+    }
+    ge-0/0/2 {
+        unit 0 {
+            family inet {
+                address 10.10.102.1/24;
+            }
+        }
+    }
+    fxp0 {
+        mac 50:00:00:02:{{ mac }}:00
+        unit 0 {
+            family inet {
+                no-redirects;
+                address {{ subnet }}.{{ num }}/24;
+            }
+        }
+    }
+    lo0 {
+        unit 0 {
+            description "Loopback for vSRX1";
+            family inet {
+                address 192.168.1.1/32;
+            }
+        }
+    }
+}

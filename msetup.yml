@@ -1,0 +1,41 @@
+---
+- name: Setup eve-ng
+  hosts:
+    - eve1
+    - eve2
+    - eve3
+    - eve4
+    - eve5
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Set ip for eve
+      ansible.builtin.set_fact:
+        labnum: "{{ inventory_hostname[3:] }}"
+
+    - name: Display labnum
+      ansible.builtin.debug:
+        var: labnum
+
+    - name: Copy labfile to hosts
+      template:
+        src: "./files/jncia-sec.unl"
+        dest: "/opt/unetlab/labs/"
+
+    # - name: Copy vsrx images to hosts
+    #   copy:
+    #     src: "./files/{{ item }}"
+    #     dest: "/opt/unetlab/addons/qemu/"
+    #   loop:
+    #     - vsrxng-21.2R1.10
+
+    - name: Copy from eve1
+      ansible.builtin.expect:
+        command: scp -r -o StrictHostKeyChecking=no root@192.168.20.51:/opt/unetlab/addons/qemu/vsrxng-21.2R1.10 /opt/unetlab/addons/qemu/
+        responses:
+          "password": "eve"
+
+    - name: Run eve permission command
+      command: >
+        /opt/unetlab/wrappers/unl_wrapper -a fixpermissions

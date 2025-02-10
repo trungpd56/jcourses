@@ -1,0 +1,29 @@
+---
+- name: Copy Device Configuration
+  hosts:
+    - srx_local
+  connection: local
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  vars:
+    user: lab
+    passwd: lab123
+    # lab: 1
+  tasks:
+    - name: Create folder if not exists
+      file:
+        path: "lab{{ lab }}"
+        state: directory
+
+    - name: Set varible for playbook
+      set_fact:
+        num: "{{ (inventory_hostname[3:] | int) + 0 }}"
+
+    - name: Get configuration from devices
+      juniper.device.config:
+        retrieve: committed
+        dest: "{{ course }}/lab{{ lab }}/srx{{ 2 - (num | int ) % 2 }}.j2"
+
+
+

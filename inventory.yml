@@ -1,0 +1,87 @@
+srx_local:
+  hosts:
+    lrx1: {ansible_host: 172.16.1.1}
+    lrx2: {ansible_host: 172.16.1.2}
+
+eve_local:
+  hosts:
+    lve1: {ansible_host: 172.16.1.149}
+
+eve_lab:
+  hosts:
+    eve1: {ansible_host: 192.168.20.51}
+    eve2: {ansible_host: 192.168.20.52}
+    eve3: {ansible_host: 192.168.20.53}
+    eve4: {ansible_host: 192.168.20.54}
+    eve5: {ansible_host: 192.168.20.55}
+    eve6: {ansible_host: 192.168.20.56}
+    eve7: {ansible_host: 192.168.20.57}
+    eve8: {ansible_host: 192.168.20.58}
+    eve9: {ansible_host: 192.168.20.59}
+    eve10: {ansible_host: 192.168.20.60}
+    eve11: {ansible_host: 192.168.20.61}
+    eve12: {ansible_host: 192.168.20.62}
+    eve13: {ansible_host: 192.168.20.63}
+    eve14: {ansible_host: 192.168.20.64}
+    eve15: {ansible_host: 192.168.20.65}
+    eve16: {ansible_host: 192.168.20.66}
+    eve17: {ansible_host: 192.168.20.67}
+    eve18: {ansible_host: 192.168.20.68}
+    eve19: {ansible_host: 192.168.20.69}
+    eve20: {ansible_host: 192.168.20.70}
+    eve21: {ansible_host: 192.168.20.71}
+    eve22: {ansible_host: 192.168.20.72}
+  vars:
+    ansible_user: root
+    ansible_password: eve
+
+srx_lab:
+  hosts:
+    srx1: {ansible_host: 192.168.20.81}
+    srx2: {ansible_host: 192.168.20.82}
+    srx3: {ansible_host: 192.168.20.83}
+    srx4: {ansible_host: 192.168.20.84}
+    srx5: {ansible_host: 192.168.20.85}
+    srx6: {ansible_host: 192.168.20.86}
+    srx7: {ansible_host: 192.168.20.87}
+    srx8: {ansible_host: 192.168.20.88}
+    srx9: {ansible_host: 192.168.20.89}
+    srx10: {ansible_host: 192.168.20.90}
+    srx11: {ansible_host: 192.168.20.91}
+    srx12: {ansible_host: 192.168.20.92}
+    srx13: {ansible_host: 192.168.20.93}
+    srx14: {ansible_host: 192.168.20.94}
+    srx15: {ansible_host: 192.168.20.95}
+    srx16: {ansible_host: 192.168.20.96}
+    srx17: {ansible_host: 192.168.20.97}
+    srx18: {ansible_host: 192.168.20.98}
+    srx19: {ansible_host: 192.168.20.99}
+    srx20: {ansible_host: 192.168.20.100}
+    srx21: {ansible_host: 192.168.20.101}
+    srx22: {ansible_host: 192.168.20.102}
+    srx23: {ansible_host: 192.168.20.103}
+    srx24: {ansible_host: 192.168.20.104}
+    srx25: {ansible_host: 192.168.20.105}
+    srx26: {ansible_host: 192.168.20.106}
+    srx27: {ansible_host: 192.168.20.107}
+    srx28: {ansible_host: 192.168.20.108}
+    srx29: {ansible_host: 192.168.20.109}
+    srx30: {ansible_host: 192.168.20.110}
+    srx31: {ansible_host: 192.168.20.111}
+    srx32: {ansible_host: 192.168.20.112}
+    srx33: {ansible_host: 192.168.20.113}
+    srx34: {ansible_host: 192.168.20.114}
+    srx35: {ansible_host: 192.168.20.115}
+    srx36: {ansible_host: 192.168.20.116}
+    srx37: {ansible_host: 192.168.20.117}
+    srx38: {ansible_host: 192.168.20.118}
+    srx39: {ansible_host: 192.168.20.119}
+    srx40: {ansible_host: 192.168.20.120}
+    srx41: {ansible_host: 192.168.20.121}
+    srx42: {ansible_host: 192.168.20.122}
+    srx43: {ansible_host: 192.168.20.123}
+    srx44: {ansible_host: 192.168.20.124}
+  vars:
+    ansible_user: lab
+    ansible_password: lab123
+

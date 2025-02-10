@@ -1,0 +1,5 @@
+vars.yml
+files/*
+cookies/*
+.DS_Store
+_files/
