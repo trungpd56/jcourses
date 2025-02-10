@@ -1,0 +1,29 @@
+---
+- name: Setup eve-ng
+  hosts:
+    - lve1
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Set ip for eve
+      ansible.builtin.set_fact:
+        num: "{{ (inventory_hostname[3:] | int) + 200 }}"
+        labnum: "{{ inventory_hostname[3:] }}"
+
+    - name: Copy labfile to hosts
+      template:
+        # labnum need to be specify for base config to work srx1,2,3,...
+        src: "jncia-sec.unl"
+        dest: /opt/unetlab/labs/
+
+    - name: Copy vsrx images to hosts
+      copy:
+        src: "./images/{{ item }}"
+        dest: "/opt/unetlab/addons/qemu/"
+      loop:
+        - vmx-14.1
+
+    - name: Run eve permission command
+      command: >
+        /opt/unetlab/wrappers/unl_wrapper -a fixpermissions
