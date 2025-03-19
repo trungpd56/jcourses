@@ -1,7 +1,7 @@
 ---
 - name: Copy Device Configuration
   hosts:
-    - srx_local
+    - lsrx1
   connection: local
   gather_facts: no
   vars_files:
@@ -9,7 +9,7 @@
   vars:
     user: lab
     passwd: lab123
-    # lab: 1
+    # lab: 1 #extra
   tasks:
     - name: Create folder if not exists
       file:
@@ -23,7 +23,7 @@
     - name: Get configuration from devices
       juniper.device.config:
         retrieve: committed
-        dest: "{{ course }}/lab{{ lab }}/srx{{ 2 - (num | int ) % 2 }}.j2"
+        dest: "lab{{ lab }}/srx{{ 2 - (num | int ) % 2 }}.j2"
 
 
 

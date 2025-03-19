@@ -1,0 +1,274 @@
+
+## Last commit: 2025-02-08 16:03:05 +07 by jncie
+version 23.2R2.21;
+system {
+    host-name vSRX2;
+    root-authentication {
+        encrypted-password "$1$8Lynql2R$/rI7mV1Bn7accG1FEkrks0";
+    }
+    login {
+        user jncie {
+            uid 2000;
+            class super-user;
+            authentication {
+                encrypted-password "$1$XNn4yetq$GgnlVPwCM38FsliOjy1iT1";
+            }
+        }
+        user lab {
+            uid 2001;
+            class super-user;
+            authentication {
+                encrypted-password "$6$MLRMYuaq$iddHDEenxSoYqtrsgHIMSGt2XJ0/ccs2fLBvKYwlTeAcvuYwQywjf/gz5ZfoB40lzZGSW3uoEwmJ/sOHO4Msk/";
+            }
+        }
+    }
+    services {
+        ssh {
+            root-login allow;
+            sftp-server;
+        }
+        netconf {
+            ssh;
+        }
+        web-management {
+            http {
+                interface fxp0.0;
+            }
+        }
+    }
+    time-zone Asia/Saigon;
+    name-server {
+        8.8.8.8;
+    }
+    syslog {
+        user * {
+            any emergency;
+            pfe none;
+        }
+        file interactive-commands {
+            interactive-commands any;
+        }
+        file messages {
+            any any;
+            authorization info;
+        }
+    }
+    license {
+        autoupdate {
+            url https://ae1.juniper.net/junos/key_retrieval;
+        }
+    }
+    ntp {
+        server 172.16.1.253;
+    }
+}
+security {
+    ike {
+        proposal phase1-profile {
+            authentication-method pre-shared-keys;
+            dh-group group19;
+            encryption-algorithm aes-256-gcm;
+            lifetime-seconds 28800;
+        }
+        policy phase1-policy {
+            mode main;
+            proposals phase1-profile;
+            pre-shared-key ascii-text "$9$5znCO1hKMXtuMX7-2gTz3";
+        }
+        gateway phase1-gw {
+            ike-policy phase1-policy;
+            address 172.18.1.1;
+            dead-peer-detection {
+                interval 10;
+                threshold 5;
+            }
+            external-interface lt-0/0/0.2;
+            version v2-only;
+        }
+    }
+    ipsec {
+        proposal phase2-profile {
+            protocol esp;
+            encryption-algorithm aes-256-gcm;
+            lifetime-seconds 3600;
+        }
+        policy phase2-policy {
+            perfect-forward-secrecy {
+                keys group19;
+            }
+            proposals phase2-profile;
+        }
+        vpn to-remote-gw {
+            bind-interface st0.0;
+            ike {
+                gateway phase1-gw;
+                ipsec-policy phase2-policy;
+            }
+            establish-tunnels immediately;
+        }
+    }
+    policies {
+        default-policy {
+            permit-all;
+        }
+    }
+    zones {
+        security-zone trust {
+            host-inbound-traffic {
+                system-services {
+                    all;
+                }
+            }
+            interfaces {
+                ge-0/0/1.0;
+            }
+        }
+        security-zone dmz {
+            host-inbound-traffic {
+                system-services {
+                    all;
+                }
+            }
+            interfaces {
+                ge-0/0/2.0;
+            }
+        }
+        security-zone internet {
+            host-inbound-traffic {
+                system-services {
+                    all;
+                }
+            }
+            interfaces {
+                ge-0/0/0.0;
+                lo0.1;
+                lt-0/0/0.1;
+            }
+        }
+        security-zone untrust {
+            host-inbound-traffic {
+                system-services {
+                    all;
+                }
+            }
+            interfaces {
+                lt-0/0/0.2;
+                lo0.0;
+            }
+        }
+        security-zone vpn {
+            host-inbound-traffic {
+                system-services {
+                    ike;
+                }
+            }
+            interfaces {
+                st0.0;
+            }
+        }
+    }
+}
+interfaces {
+    ge-0/0/0 {
+        unit 0 {
+            family inet {
+                address 172.18.1.2/24;
+            }
+        }
+    }
+    lt-0/0/0 {
+        unit 1 {
+            encapsulation ethernet;
+            peer-unit 2;
+            family inet {
+                address 172.29.10.1/24;
+            }
+        }
+        unit 2 {
+            encapsulation ethernet;
+            peer-unit 1;
+            family inet {
+                address 172.29.10.2/24;
+            }
+        }
+    }
+    ge-0/0/1 {
+        unit 0 {
+            family inet {
+                address 10.10.101.10/24;
+            }
+        }
+    }
+    ge-0/0/2 {
+        unit 0 {
+            family inet {
+                address 10.10.102.10/24;
+            }
+        }
+    }
+    fxp0 {
+        mac 50:00:00:02:{{ mac }}:00
+        unit 0 {
+            family inet {
+                no-redirects;
+                address {{ subnet }}.{{ num }}/24;
+            }
+        }
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                address 10.10.203.10/32;
+            }
+        }
+        unit 1 {
+            family inet {
+                address 172.31.15.1/32;
+            }
+        }
+    }
+    st0 {
+        unit 0 {
+            family inet {
+                address 192.168.100.2/24;
+            }
+        }
+    }
+}
+routing-instances {
+    dmz {
+        instance-type virtual-router;
+        routing-options {
+            static {
+                route 0.0.0.0/0 next-hop 10.10.102.1;
+            }
+        }
+        interface ge-0/0/2.0;
+    }
+    internet {
+        instance-type virtual-router;
+        routing-options {
+            static {
+                route 0.0.0.0/0 next-hop 172.18.1.1;
+            }
+        }
+        interface ge-0/0/0.0;
+        interface lt-0/0/0.1;
+        interface lo0.1;
+    }
+    trust {
+        instance-type virtual-router;
+        routing-options {
+            static {
+                route 0.0.0.0/0 next-hop 10.10.101.1;
+            }
+        }
+        interface ge-0/0/1.0;
+    }
+}
+routing-options {
+    static {
+        route 0.0.0.0/0 next-hop 172.29.10.1;
+        route 10.10.102.0/24 next-hop st0.0;
+    }
+}
